@@ -1,44 +1,65 @@
-export type UserRole = 'ADMIN' | 'MEMBER';
+export enum TabType {
+  DASHBOARD = 'DASHBOARD',
+  MEMBERS = 'MEMBERS',
+  ADD_MEMBER = 'ADD_MEMBER',
+  VERIFICATION = 'VERIFICATION',
+  MY_PROFILE = 'MY_PROFILE',
+  ADD_ACTIVITY = 'ADD_ACTIVITY',
+  RANKING = 'RANKING',
+  AI_REPORT = 'AI_REPORT',
+  TASKS = 'TASKS'
+}
 
 export interface Activity {
   id: string;
-  date: string;
+  type: 'project' | 'event' | 'meeting' | 'other';
   title: string;
-  type: 'project' | 'media' | 'meeting' | 'community' | 'event' | 'other';
-  points: number;
+  description: string;
+  date: string;
   status: 'pending' | 'verified' | 'rejected';
-  description?: string;
+  points: number;
   memberId: string;
 }
 
 export interface Member {
   id: string;
   name: string;
-  avatar?: string;
-  role: UserRole;
-  position: string; 
-  committee?: string;
+  position: string; // Важно: для закрытия задач комитета здесь должно быть "Руководитель..."
+  committee: string;
   efficiency: number;
-  activities: Activity[];
-  bio?: string;
   login: string;
   password?: string;
-  scores?: any; 
-}
-
-export enum TabType {
-  DASHBOARD = 'dashboard',
-  MEMBERS = 'members',
-  RANKING = 'ranking',
-  VERIFICATION = 'verification',
-  MY_PROFILE = 'my_profile',
-  ADD_ACTIVITY = 'add_activity',
-  ADD_MEMBER = 'add_member',
-  AI_REPORT = 'ai_report'
+  activities: Activity[];
+  role: 'ADMIN' | 'MEMBER';
 }
 
 export interface UserSession {
-  role: UserRole;
+  role: 'ADMIN' | 'MEMBER';
   memberId?: string;
   name: string;
+}
+
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  assignee_id?: string; // ID конкретного пользователя
+  committee?: string;   // Название комитета (если задача общая)
+  due_date: string;
+  status: 'pending' | 'completed';
+  priority?: 'low' | 'medium' | 'high';
+  /** * Текстовый отчет о выполнении задачи. 
+   * Заполняется участником при закрытии.
+   */
+  result_text?: string; 
+}
+
+export interface AppNotification {
+  id: string;
+  userId: string; // 'ADMIN' для всех админов или конкретный ID участника
+  title: string;
+  message: string;
+  type: 'success' | 'warning' | 'info' | 'task';
+  isRead: boolean;
+  timestamp: Date;
 }
